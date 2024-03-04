@@ -225,7 +225,9 @@ def get_penjualan_barang(message):
         bot.reply_to(message, reply_message)
         
     else:
-        bot.reply_to(message, "Data penjualan barang tidak ditemukan.")
+        # bot.reply_to(message, "Data penjualan barang tidak ditemukan.")
+        # Ask user to input again
+        bot.reply_to(message, "Silakan masukkan bulan dan tahun penjualan barang yang ingin dicari (format: YYYY-MM)")
     
 
 
