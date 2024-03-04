@@ -1,7 +1,7 @@
 # BOT TELEGRAM WITH PYTHON : Telkomsel Bot User
 Repository for Telegram Bot using Python.
 ## Overview
-By using this Machine Learning model, it is hoped that it can provide scholarship recommendations based on user personal data so that it can help prospective scholarship recipients to register themselves for the right scholarship or suitable for them.
+By using the telegram bot library in python, a bot was created that can automatically calculate the revenue of Telkomsel on the Makassar branch.
 
 ## Table of Contents
 
@@ -26,10 +26,10 @@ pip install -r requirements.txt
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/CH2-PS562-Grant-Me/MachineLearningGM.git
+git clone https://github.com/AkbarAj15/Bot_Tele_Tsel.git
 
 # Change directory
-cd MachineLearningGM # change with your folder name
+cd Bot_Tele_Tsel # change with your folder name
 
 # Install dependencies
 pip install -r requirements.txt
@@ -40,17 +40,7 @@ In the process of making this model, there are several stages that are carried o
 
 ### Data Preparation
 For the dataset that we use in csv format, which has several data columns including:
-- GPA value
-- Number of certifications
-- Number of professional certifications
-- Number of national achievements
-- Number of national top 3 competitions
-- Number of international achievements
-- Number of international top 3 competitions
-- Total internship experience (number of months)
-- Total committee experience (number of months)
 
-After getting the dataset, data cleaning is carried out starting from separating data from semicolons, replacing empty values to NaN, and changing all data types to float.
 
 ### Clustering
 We use the K-Means algorithm to cluster each data in the dataset.
