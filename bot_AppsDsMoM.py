@@ -132,31 +132,56 @@ def get_penjualan(message):
             if data[1] == 'BULAN_M':
                 current_month_trx_omset = data[12]
                 current_month_rev_omset = data[13]
+                current_month_trx_renewal = data[14]
+                current_month_rev_renewal = data[15]
                 current_month_trx_cvm = data[16]
                 current_month_rev_cvm = data[17]
-                
+                current_month_trx_omni = data[18]
+                current_month_rev_omni = data[19]
+                current_month_trx_games = data[20]
+                current_month_rev_games = data[21]
             elif data[1] == 'BULAN_M1':
                 previous_month_trx_omset = data[12]
                 previous_month_rev_omset = data[13]
+                previous_month_trx_renewal = data[14]
+                previous_month_rev_renewal = data[15]
                 previous_month_trx_cvm = data[16]
                 previous_month_rev_cvm = data[17]
+                previous_month_trx_omni = data[18]
+                previous_month_rev_omni = data[19]
+                previous_month_trx_games = data[20]
+                previous_month_rev_games = data[21]
         if current_month_trx_omset and current_month_rev_omset:  # Pastikan data untuk kedua bulan tersedia
            # Calculate MoM growth
             mom_trx_omset = ((current_month_trx_omset / previous_month_trx_omset) - 1)* 100
             mom_rev_omset = ((current_month_rev_omset / previous_month_rev_omset) - 1)* 100
+            # mom_trx_renewal = ((current_month_trx_renewal / previous_month_trx_renewal) - 1)* 100
+            # mom_rev_renewal = ((current_month_rev_renewal / previous_month_rev_renewal) - 1)* 100
             mom_trx_cvm = ((current_month_trx_cvm / previous_month_trx_cvm) - 1)* 100
             mom_rev_cvm = ((current_month_rev_cvm / previous_month_rev_cvm) - 1)* 100
+            # mom_trx_omni = ((current_month_trx_omni / previous_month_trx_omni) - 1)* 100
+            # mom_rev_omni = ((current_month_rev_omni / previous_month_rev_omni) - 1)* 100
+            # mom_trx_games = ((current_month_trx_games / previous_month_trx_games) - 1)* 100
+            # mom_rev_games = ((current_month_rev_games / previous_month_rev_games) - 1)* 100
             locale.setlocale(locale.LC_ALL, '')  # Mengatur lokalisasi sesuai dengan pengaturan default sistem
-            # Format angka dengan separator ribuan dan 3 digit desimal
             
             # Show the Outlet id
             reply_message = f"Outlet ID: {data[8]}\nNama: {data[9]}\nStatus PJP: {data[10]}\nFisik: {data[11]}\nLast Update: {data[0]}\n\n"
             # Show the Omset MoM
             formatted_rev_omset = locale.format_string("%.3f", current_month_rev_omset, grouping=True).rstrip('0').rstrip('.')
             reply_message += f"""Omset\ntrx_omset: {current_month_trx_omset}\nMoM trx_omset: {mom_trx_omset: .2f}%\nrev_omset: {formatted_rev_omset}\nMoM rev_omset: {mom_rev_omset: .2f}%\n\n"""  # Format pesan balasan
+            # # Show the Renewal MoM
+            # formatted_rev_renewal = locale.format_string("%.3f", current_month_rev_renewal, grouping=True).rstrip('0').rstrip('.')
+            # reply_message += f"""Renewal\ntrx_renewal: {current_month_trx_renewal}\nMoM trx_renewal: {mom_trx_renewal: .2f}%\nrev_renewal: {formatted_rev_renewal}\nMoM rev_renewal: {mom_rev_renewal: .2f}%\n"""  # Format pesan balasan
             # Show the CVM MoM
             formatted_rev_cvm = locale.format_string("%.3f", current_month_rev_cvm, grouping=True).rstrip('0').rstrip('.')
             reply_message += f"""CVM\ntrx_cvm: {current_month_trx_cvm}\nMoM trx_cvm: {mom_trx_cvm: .2f}%\nrev_cvm: {formatted_rev_cvm}\nMoM rev_cvm: {mom_rev_cvm: .2f}%\n"""  # Format pesan balasan
+            # # Show the Omni MoM
+            # formatted_rev_omni = locale.format_string("%.3f", current_month_rev_omni, grouping=True).rstrip('0').rstrip('.')
+            # reply_message += f"""Omni\ntrx_omni: {current_month_trx_omni}\nMoM trx_omni: {mom_trx_omni: .2f}%\nrev_omni: {formatted_rev_omni}\nMoM rev_omni: {mom_rev_omni: .2f}%\n"""  # Format pesan balasan
+            # Show the Games MoM
+            # formatted_rev_games = locale.format_string("%.3f", current_month_rev_games, grouping=True).rstrip('0').rstrip('.')
+            # reply_message += f"""Games\ntrx_games: {current_month_trx_games}\nMoM trx_games: {mom_trx_games: .2f}%\nrev_games: {formatted_rev_games}\nMoM rev_games: {mom_rev_games: .2f}%\n"""  # Format pesan balasan
             bot.reply_to(message, reply_message)
         else:
             bot.reply_to(message, "Data untuk kedua bulan tidak lengkap.")
