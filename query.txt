@@ -1,0 +1,38 @@
+SELECT provinsi,kategori,
+		SUM(m1_trx_ds) AS m1_trx_ds,
+		SUM(mtd_trx_ds) AS mtd_trx_ds,
+        SUM(mtd_n1_trx_ds) AS mtd_n1_trx_ds,
+        SUM(ytd_n1_trx_ds) AS ytd_n1_trx_ds,
+        SUM(ytd_trx_ds) AS ytd_trx,        
+		ROUND(SUM(mtd_trx_ds) - SUM(m1_trx_ds),2) AS gap_trx_ds,
+		ROUND(((SUM(mtd_trx_ds)/SUM(m1_trx_ds))-1)*100,2) AS mom_trx_ds,
+		ROUND(((SUM(mtd_trx_ds)/SUM(mtd_n1_trx_ds))-1)*100,2) AS yoy_trx_ds,
+		ROUND(((SUM(ytd_trx_ds)/SUM(ytd_n1_trx_ds))-1)*100,2) AS ytd_trx_ds,
+
+        SUM(m1_rev_ds) AS m1_rev_ds,
+		SUM(mtd_rev_ds) AS mtd_rev_ds,
+        SUM(mtd_n1_rev_ds) AS mtd_n1_rev_ds,
+        SUM(ytd_n1_rev_ds) AS ytd_n1_rev_ds,
+        SUM(ytd_rev_ds) AS ytd_rev,        
+		ROUND(SUM(mtd_rev_ds) - SUM(m1_rev_ds),2) AS gap_rev_ds,
+		ROUND(((SUM(mtd_rev_ds)/SUM(m1_rev_ds))-1)*100,2) AS mom_rev_ds,
+		ROUND(((SUM(mtd_rev_ds)/SUM(mtd_n1_rev_ds))-1)*100,2) AS yoy_rev_ds,
+		ROUND(((SUM(ytd_rev_ds)/SUM(ytd_n1_rev_ds))-1)*100,2) AS ytd_rev_ds
+		
+		FROM
+		(SELECT provinsi,kategori,
+		SUM(CASE WHEN trx_date BETWEEN '".$dates['lcm']."' AND '".$dates['lcm_ago']."' THEN trx ELSE 0 END) AS m1_trx_ds,
+		SUM(CASE WHEN trx_date BETWEEN '".$dates['fcm']."' AND '".$tanggal."' THEN trx ELSE 0 END) AS mtd_trx_ds,
+		SUM(CASE WHEN trx_date BETWEEN '".$dates['fcm_x']."' AND '".$dates['last_year']."' THEN trx ELSE 0 END) AS mtd_n1_trx_ds,
+		SUM(CASE WHEN trx_date BETWEEN '".$dates['fy']."' AND '".$tanggal."' THEN trx ELSE 0 END) AS ytd_trx_ds,
+		SUM(CASE WHEN trx_date BETWEEN '".$dates['ly']."' AND '".$dates['last_year']."' THEN trx ELSE 0 END) AS ytd_n1_trx_ds,
+
+		SUM(CASE WHEN trx_date BETWEEN '".$dates['lcm']."' AND '".$dates['lcm_ago']."' THEN rev ELSE 0 END)/1000000000 AS m1_rev_ds,
+		SUM(CASE WHEN trx_date BETWEEN '".$dates['fcm']."' AND '".$tanggal."' THEN rev ELSE 0 END)/1000000000 AS mtd_rev_ds,
+		SUM(CASE WHEN trx_date BETWEEN '".$dates['fcm_x']."' AND '".$dates['last_year']."' THEN rev ELSE 0 END)/1000000000 AS mtd_n1_rev_ds,
+		SUM(CASE WHEN trx_date BETWEEN '".$dates['fy']."' AND '".$tanggal."' THEN rev ELSE 0 END)/1000000000 AS ytd_rev_ds,
+		SUM(CASE WHEN trx_date BETWEEN '".$dates['ly']."' AND '".$dates['last_year']."' THEN rev ELSE 0 END)/1000000000 AS ytd_n1_rev_ds
+		FROM transaksi
+		GROUP BY kategori,provinsi)a
+		GROUP BY kategori,provinsi
+		ORDER BY 1,2,3,4
