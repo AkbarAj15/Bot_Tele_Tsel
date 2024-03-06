@@ -32,7 +32,7 @@ def send_welcome(message):
     first_name = message.chat.first_name
     bot.reply_to(message, 'Kami cek data kamu dulu ya')
     if is_registered(first_name):
-        bot.reply_to(message, "Halo, {}!".format(first_name) + "\n" + "Silahkan Klik menu dibawah ini untuk melihat\n 1. /performance (DS)\n 2. /search (OUTLET_ID)")
+        bot.reply_to(message, "Halo, {}!".format(first_name) + "\n" + "Silahkan Klik menu dibawah ini untuk melihat\n 1. /performance (DS)\n 2. /search (OUTLET_ID)\n")
     else:
         bot.reply_to(message, "Data pengguna tidak ditemukan. Silahkan input data kamu dengan perintah /register")
 # Command to initiate registration
