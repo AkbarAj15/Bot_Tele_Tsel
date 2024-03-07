@@ -140,7 +140,7 @@ def get_penjualan(message):
         rev = data_omset[2]
         Mom_trx = data_omset[1]
         Mom_rev = data_omset[3]
-        formatted_rev = locale.format_string("%.3f", rev, grouping=True).rstrip('0').rstrip('.')
+        formatted_rev = locale.format_string("%.3f", rev, grouping=True).rstrip('0').rstrip(',')
         reply_message += f'\n\nOmset\nTrx: {trx}\nMoM Trx: {Mom_trx : .2f}%\nRev: {formatted_rev}\nMoM Rev: {Mom_rev : .2f}%'
     # Show the Renewal Data Outlet
     renewal = get_renewal(outlet_id)
@@ -149,7 +149,8 @@ def get_penjualan(message):
         rev_renewal = data_renewal[2]
         Mom_trx_renewal = data_renewal[1]
         Mom_rev_renewal = data_renewal[3]
-        reply_message += f'\n\nRenewal\nTrx: {trx_renewal}\nMoM Trx: {Mom_trx_renewal : .2f}%\nRev: {rev_renewal}\nMoM Rev: {Mom_rev_renewal: .2f}%'
+        formatted_rev_renewal = locale.format_string("%.3f", rev_renewal, grouping=True).rstrip('0').rstrip(',')
+        reply_message += f'\n\nRenewal\nTrx: {trx_renewal}\nMoM Trx: {Mom_trx_renewal : .2f}%\nRev: {formatted_rev_renewal}\nMoM Rev: {Mom_rev_renewal: .2f}%'
     
     # Show the CVM Data Outlet
     cvm = get_cvm(outlet_id)
@@ -158,7 +159,8 @@ def get_penjualan(message):
         rev_cvm = data_cvm[2]
         Mom_trx_cvm = data_cvm[1]
         Mom_rev_cvm = data_cvm[3]
-        reply_message += f'\n\nCVM\nTrx: {trx_cvm}\nMoM Trx: {Mom_trx_cvm : .2f}%\nRev: {rev_cvm}\nMoM Rev: {Mom_rev_cvm : .2f}%'
+        formatted_rev_cvm = locale.format_string("%.3f", rev_cvm, grouping=True).rstrip('0').rstrip(',')
+        reply_message += f'\n\nCVM\nTrx: {trx_cvm}\nMoM Trx: {Mom_trx_cvm : .2f}%\nRev: {formatted_rev_cvm}\nMoM Rev: {Mom_rev_cvm : .2f}%'
     
     # Show the Omni Data Outlet
     omni = get_omni(outlet_id)
@@ -167,7 +169,59 @@ def get_penjualan(message):
         rev_omni = data_omni[2]
         Mom_trx_omni = data_omni[1]
         Mom_rev_omni = data_omni[3]
-        reply_message += f'\n\nOmni\nTrx: {trx_omni}\nMoM Trx: {Mom_trx_omni : .2f}%\nRev: {rev_omni}\nMoM Rev: {Mom_rev_omni : .2f}%'
+        formatted_rev_omni = locale.format_string("%.3f", rev_omni, grouping=True).rstrip('0').rstrip(',')
+        reply_message += f'\n\nOmni\nTrx: {trx_omni}\nMoM Trx: {Mom_trx_omni : .2f}%\nRev: {formatted_rev_omni}\nMoM Rev: {Mom_rev_omni : .2f}%'
+    
+    # Show the Games Data Outlet
+    games = get_games(outlet_id)
+    for data_games in games:
+        trx_games = data_games[0]
+        rev_games = data_games[2]
+        Mom_trx_games = data_games[1]
+        Mom_rev_games = data_games[3]
+        formatted_rev_games = locale.format_string("%.3f", rev_games, grouping=True).rstrip('0').rstrip(',')
+        reply_message += f'\n\nGames\nTrx: {trx_games}\nMoM Trx: {Mom_trx_games : .2f}%\nRev: {formatted_rev_games}\nMoM Rev: {Mom_rev_games : .2f}%'
+        
+    # Show the Voice Data Outlet
+    voice = get_voice(outlet_id)
+    for data_voice in voice:
+        trx_voice = data_voice[0]
+        rev_voice = data_voice[2]
+        Mom_trx_voice = data_voice[1]
+        Mom_rev_voice = data_voice[3]
+        formatted_rev_voice = locale.format_string("%.3f", rev_voice, grouping=True).rstrip('0').rstrip(',')
+        reply_message += f'\n\nVoice\nTrx: {trx_voice}\nMoM Trx: {Mom_trx_voice : .2f}%\nRev: {formatted_rev_voice}\nMoM Rev: {Mom_rev_voice : .2f}%'
+    
+    # Show the NSB Data Outlet
+    nsb = get_nsb(outlet_id)
+    for data_nsb in nsb:
+        trx_nsb = data_nsb[0]
+        rev_nsb = data_nsb[2]
+        Mom_trx_nsb = data_nsb[1]
+        Mom_rev_nsb = data_nsb[3]
+        formatted_rev_nsb = locale.format_string("%.3f", rev_nsb, grouping=True).rstrip('0').rstrip(',')
+        reply_message += f'\n\nNSB\nTrx: {trx_nsb}\nMoM Trx: {Mom_trx_nsb : .2f}%\nRev: {formatted_rev_nsb}\nMoM Rev: {Mom_rev_nsb : .2f}%'
+        
+    # Show the Combo Data Outlet
+    combo = get_combo(outlet_id)
+    for data_combo in combo:
+        trx_combo = data_combo[0]
+        rev_combo = data_combo[2]
+        Mom_trx_combo = data_combo[1]
+        Mom_rev_combo = data_combo[3]
+        formatted_rev_combo = locale.format_string("%.3f", rev_combo, grouping=True).rstrip('0').rstrip(',')
+        reply_message += f'\n\nCombo\nTrx: {trx_combo}\nMoM Trx: {Mom_trx_combo : .2f}%\nRev: {formatted_rev_combo}\nMoM Rev: {Mom_rev_combo : .2f}%'
+    
+    # Show the Internet Sakti Data Outlet
+    isak = get_isak(outlet_id)
+    for data_isak in isak:
+        trx_isak = data_isak[0]
+        rev_isak = data_isak[2]
+        Mom_trx_isak = data_isak[1]
+        Mom_rev_isak = data_isak[3]
+        formatted_rev_isak = locale.format_string("%.3f", rev_isak, grouping=True).rstrip('0').rstrip(',')
+        reply_message += f'\n\nInternet Sakti\nTrx: {trx_isak}\nMoM Trx: {Mom_trx_isak : .2f}%\nRev: {formatted_rev_isak}\nMoM Rev: {Mom_rev_isak : .2f}%'
+    
     
     bot.reply_to(message, reply_message)
     
