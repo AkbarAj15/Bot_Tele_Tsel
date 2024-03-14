@@ -32,7 +32,7 @@ def send_welcome(message):
     first_name = message.chat.first_name
     bot.reply_to(message, 'Kami cek data kamu dulu ya')
     if is_registered(first_name):
-        bot.reply_to(message, "Halo, {}!".format(first_name) + "\n" + "Silahkan Klik menu dibawah ini untuk melihat\n 1. /performance (DS)\n 2. /search (OUTLET_ID)\n")
+        bot.reply_to(message, "Halo, {}!".format(first_name) + "\n" + "Silahkan Klik menu dibawah ini untuk melihat\n 1. /search (OUTLET_ID)\n")
     else:
         bot.reply_to(message, "Data pengguna tidak ditemukan. Silahkan input data kamu dengan perintah /register")
 # Command to initiate registration
@@ -61,7 +61,7 @@ def get_nik(message):
     registration_status[user_id] = "waiting_for_address"
     
     # Ask user for address
-    bot.reply_to(message, "Terima kasih. Sekarang masukkan alamat Anda.")
+    bot.reply_to(message, "NIK telah tersimpan. Sekarang masukkan alamat Anda.")
 
 # Handler for address input
 @bot.message_handler(func=lambda message: registration_status.get(message.from_user.id) == "waiting_for_address")
@@ -94,7 +94,7 @@ def get_phone_number(message):
     save_registration_data(user_id)
     
     # Inform user about successful registration
-    bot.reply_to(message, "Registrasi berhasil. Data Anda telah terdaftar.")
+    bot.reply_to(message, "Registrasi berhasil. Data Anda telah terdaftar. Silahkan klik menu dibawah ini untuk melihat\n 1. /search (OUTLET_ID)\n")
 
 def save_registration_data(user_id):
     # Retrieve user's registration data
@@ -371,7 +371,7 @@ search_status = {}
 registration_status = {}
 print('Bot start running')
 # Start polling
-bot.infinity_polling()
+bot.polling()
 
 # Close database connection
 db.close()
