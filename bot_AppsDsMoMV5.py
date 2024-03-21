@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 import mysql.connector
 import locale
+from telebot import types
 
 # Load environment variables from .env file
 load_dotenv()
@@ -15,7 +16,7 @@ db = mysql.connector.connect(
     host="localhost",
     user="root",
     password="",
-    database="cobaBot"
+    database="bot_gtm_ar4"
 )
 cursor = db.cursor()
 #fucntion to check if a username is registered
@@ -117,9 +118,11 @@ def get_penjualan(message):
     outlet_data = get_outlet_data(outlet_id)
     if outlet_data:
         locale.setlocale(locale.LC_ALL, '')  # Mengatur lokalisasi sesuai dengan pengaturan default sistem
+        reply_awal = f'*Sedang proses perhitungan. Mohon Ditunggu*\n'
+        bot.reply_to(message, reply_awal, parse_mode='Markdown')
         for data in outlet_data:
-            reply_message = f'*Semangat Pagi !!!*\n'
-            reply_message += f'Berikut performance update data : *{data[4]}*\nID Digipos: *{data[0]}*\nNama: *{data[1]}*\nStatus : {data[2]}\nFisik: *{data[3]}*\n'
+            reply_message = f'*Semangat Pagi!*\n'
+            reply_message += f'Berikut performance update data : *{data[0]}*\nID Digipos: *{data[1]}*\nNo RS: *{data[2]}*\nStatus : *{data[3]}*\nFisik: *{data[4]}*\n'
         # Show the Omset Data Outlet
         omset = get_omset(outlet_id)
         for data_omset in omset:
@@ -149,6 +152,26 @@ def get_penjualan(message):
             Mom_rev_cvm = data_cvm[3]
             formatted_rev_cvm = locale.format_string("%.3f", rev_cvm, grouping=True).rstrip('0').rstrip(',')
             reply_message += f'\n\n*CVM*\nTransaksi: {trx_cvm}\nMoM : {Mom_trx_cvm : .2f}%\n\nRevenue : {formatted_rev_cvm}\nMoM : {Mom_rev_cvm : .2f}%'
+        
+        # Show the Sales Order Data Outlet
+        so = get_so(outlet_id)
+        for data_so in so:
+            trx_so = data_so[0]
+            Mom_trx_so = data_so[1]
+            reply_message += f'\n\n*SO*\nTransaksi: {trx_so}\nMoM : {Mom_trx_so : .2f}%'
+        
+        # Show the DLS Data Outlet
+        dls = get_dls(outlet_id)
+        for data_dls in dls:
+            trx_dls = data_dls[0]
+            rev_dls = data_dls[2]
+            Mom_trx_dls = data_dls[1]
+            Mom_rev_dls = data_dls[3]
+            formatted_rev_dls = locale.format_string("%.3f", rev_dls, grouping=True).rstrip('0').rstrip(',')
+            reply_message += f'\n\n*DLS*\nTransaksi: {trx_dls}\nMoM : {Mom_trx_dls : .2f}%\n\nRevenue : {formatted_rev_dls}\nMoM : {Mom_rev_dls : .2f}%'
+        
+        reply_message += f'\n\nSekian Terima Kasih'
+        
         bot.reply_to(message, reply_message, parse_mode='Markdown')
     else:
         bot.reply_to(message, "Outlet ID tidak ditemukan.\nSilahkan masukkan Outlet ID yang benar.")
@@ -158,7 +181,7 @@ def get_penjualan(message):
 # Function to get data from database
 def get_outlet_data(outlet_id):
     cursor = db.cursor()
-    cursor.execute("SELECT outlet_id, nama, status_pjp, fisik, last_update FROM data_penjualan_ds WHERE outlet_id = %s", (outlet_id,))
+    cursor.execute("SELECT periode, outlet_id, no_rs, status_pjp, fisik FROM data_trx_ds240310 WHERE outlet_id = %s", (outlet_id,))
     outlet_data = cursor.fetchall()
     return outlet_data
 
@@ -166,10 +189,13 @@ def get_outlet_data(outlet_id):
 def get_omset(outlet_id):
     cursor = db.cursor()
     cursor.execute("""SELECT trx_omset, 
-                   (SUM(CASE WHEN cat_periode = 'BULAN_M' THEN trx_omset ELSE 0 END) / SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN trx_omset ELSE 0 END)-1)*100 AS MoM_Trx_Omset, 
+                   (CASE WHEN SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN trx_omset ELSE 0 END) <> 0 
+                        THEN ((SUM(CASE WHEN cat_periode = 'BULAN_M' THEN trx_omset ELSE 0 END) / SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN trx_omset ELSE 0 END) - 1) * 100) 
+                        ELSE 0 END) AS MoM_trx_omset,
                    rev_omset, 
-                   (SUM(CASE WHEN cat_periode = 'BULAN_M' THEN rev_omset ELSE 0 END) / SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN rev_omset ELSE 0 END)-1)*100 AS MoM_Rev_Omset 
-                   FROM data_penjualan_ds WHERE outlet_id = %s""", (outlet_id,))
+                   (CASE WHEN SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN rev_omset ELSE 0 END) <> 0 
+                        THEN ((SUM(CASE WHEN cat_periode = 'BULAN_M' THEN rev_omset ELSE 0 END) / SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN rev_omset ELSE 0 END) - 1) * 100) 
+                        ELSE 0 END) AS MoM_rev_omset FROM data_trx_ds240310 WHERE outlet_id = %s""", (outlet_id,))
     omset = cursor.fetchall()
     return omset
 
@@ -183,7 +209,7 @@ def get_renewal(outlet_id):
                    rev_renewal, 
                    (CASE WHEN SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN rev_renewal ELSE 0 END) <> 0 
                         THEN ((SUM(CASE WHEN cat_periode = 'BULAN_M' THEN rev_renewal ELSE 0 END) / SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN rev_renewal ELSE 0 END) - 1) * 100) 
-                        ELSE 0 END) AS MoM_Rev_Renewal FROM data_penjualan_ds WHERE outlet_id = %s""", (outlet_id,))
+                        ELSE 0 END) AS MoM_Rev_Renewal FROM data_trx_ds240310 WHERE outlet_id = %s""", (outlet_id,))
     renewal = cursor.fetchall()
     return renewal
 
@@ -197,10 +223,33 @@ def get_cvm(outlet_id):
                    rev_cvm, 
                    (CASE WHEN SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN rev_cvm ELSE 0 END) <> 0 
                         THEN ((SUM(CASE WHEN cat_periode = 'BULAN_M' THEN rev_cvm ELSE 0 END) / SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN rev_cvm ELSE 0 END) - 1) * 100) 
-                        ELSE 0 END) AS MoM_Rev_cvm FROM data_penjualan_ds WHERE outlet_id = %s""", (outlet_id,))
+                        ELSE 0 END) AS MoM_Rev_cvm FROM data_trx_ds240310 WHERE outlet_id = %s""", (outlet_id,))
     cvm = cursor.fetchall()
     return cvm
 
+# Function Query get SO sales order From Database
+def get_so(outlet_id):
+    cursor = db.cursor()
+    cursor.execute("""SELECT trx_so, 
+                   (CASE WHEN SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN trx_so ELSE 0 END) <> 0 
+                        THEN ((SUM(CASE WHEN cat_periode = 'BULAN_M' THEN trx_so ELSE 0 END) / SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN trx_so ELSE 0 END) - 1) * 100) 
+                        ELSE 0 END) AS MoM_trx_so FROM data_trx_ds240310 WHERE outlet_id = %s""", (outlet_id,))
+    so = cursor.fetchall()
+    return so
+
+# Function Query get CVM From Database
+def get_dls(outlet_id):
+    cursor = db.cursor()
+    cursor.execute("""SELECT trx_dls, 
+                   (CASE WHEN SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN trx_dls ELSE 0 END) <> 0 
+                        THEN ((SUM(CASE WHEN cat_periode = 'BULAN_M' THEN trx_dls ELSE 0 END) / SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN trx_dls ELSE 0 END) - 1) * 100) 
+                        ELSE 0 END) AS MoM_trx_dls,
+                   rev_dls, 
+                   (CASE WHEN SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN rev_dls ELSE 0 END) <> 0 
+                        THEN ((SUM(CASE WHEN cat_periode = 'BULAN_M' THEN rev_dls ELSE 0 END) / SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN rev_dls ELSE 0 END) - 1) * 100) 
+                        ELSE 0 END) AS MoM_rev_dls FROM data_trx_ds240310 WHERE outlet_id = %s""", (outlet_id,))
+    dls = cursor.fetchall()
+    return dls
 
 
 
