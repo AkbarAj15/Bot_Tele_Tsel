@@ -158,8 +158,7 @@ def search_data(message):
                     Mom_rev_games = data_games[3]
                     formatted_rev_games = locale.format_string("%.3f", rev_games, grouping=True).rstrip('0').rstrip(',')
                     reply_message += f'\n\nGames\nTrx: {trx_games}\nMoM Trx: {Mom_trx_games : .2f}%\nRev: {formatted_rev_games}\nMoM Rev: {Mom_rev_games : .2f}%'
-                bot.reply_to(message, reply_message, parse_mode='Markdown')
-                
+                bot.reply_to(message, reply_message, parse_mode='Markdown')  
             else:
                 bot.reply_to(message, "ID Digipos Tidak Ditemukan\nMasukkan ID Digipos dengan benar")
         else:
