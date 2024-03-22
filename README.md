@@ -10,10 +10,10 @@ By using the telegram bot library in python, a bot was created that can automati
   - [Installation](#installation)
 - [Usage](#usage)
   - [Data Preparation](#data-preparation)
-  - [Clustering](#clustering)
-  - [Model Training](#model-training)
-  - [Model Evaluation](#model-evaluation)
-- [Results](#results)
+  - [Login](#login)
+  - [Register](#register)
+  - [Search](#search)
+- [Results MoM](#results-search)
 - [License](#license)
 
 ## Getting Started
@@ -36,27 +36,23 @@ pip install -r requirements.txt
 ```
 ## Usage
 
-In the process of making this model, there are several stages that are carried out and the use of the required data.
+At this stage there is an introduction to the features that can be done by this telegram bot to check the performance of direct sales.
 
 ### Data Preparation
-For the dataset that we use in csv format, which has several data columns including:
-
-
-### Clustering
-We use the K-Means algorithm to cluster each data in the dataset.
+At this stage there is a process of preparing the data retrieved through the database. As for some of the main queries needed as below.
 ```bash
-# Create a k-means model with the desired number of clusters
-kmeans = KMeans(n_clusters=5, random_state=42)
-
-# Add the clustering result column to the dataframe
-data['Cluster'] = kmeans.labels_
+// Melakukan Perhitungan MoM 
+SELECT trx_cvm, (CASE WHEN SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN trx_cvm ELSE 0 END) <> 0 
+    THEN ((SUM(CASE WHEN cat_periode = 'BULAN_M' THEN trx_cvm ELSE 0 END) / SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN trx_cvm ELSE 0 END) - 1) * 100) 
+    ELSE 0 END) AS MoM_trx_cvm,
 ```
-There are 5 clusters initialized, each cluster representing the scholarship types below.
-- cluster[0] = government tag
-- cluster[1] = private tag
-- cluster[2] = organization tag
-- cluster[3] = achievement tag
-- cluster[4] = aid tag
+
+### Login
+Automatic login feature. In this feature, DS or users can be automatically checked for data when giving the /start command to the telegram bot.
+![Alt Text](images/dokumentasi_botcrop.jpg)
+```bash
+
+```
 
 ### Model Training
 For the model training process, we used tensorflow.keras which uses 3 hidden layers. Which will be compiled using *adam* optimizer and loss params *sparse_categorical_crossentropy*.
