@@ -48,69 +48,23 @@ SELECT trx_cvm, (CASE WHEN SUM(CASE WHEN cat_periode = 'BULAN_M1' THEN trx_cvm E
 ```
 
 ### Login
-Automatic login feature. In this feature, DS or users can be automatically checked for data when giving the /start command to the telegram bot.
-![Alt Text](images/dokumentasi_botcrop.jpg)
-```bash
+Automatic login feature. In this feature, DS or users can be automatically checked for data when giving the /start command to the telegram bot.<br>
+![Gambar Login](images/dokumentasi_botcrop.jpg)
 
-```
+### Register
+In this feature, users who have not registered will be directed to register first.<br>
+![Gambar Register](images/dokumentasi_bot_crop2.jpg)
 
-### Model Training
-For the model training process, we used tensorflow.keras which uses 3 hidden layers. Which will be compiled using *adam* optimizer and loss params *sparse_categorical_crossentropy*.
-```bash
-# Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, data['Cluster'], test_size=0.2, random_state=42)
 
-# Define the TensorFlow model
-model = tf.keras.Sequential([
-    tf.keras.layers.Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
-    tf.keras.layers.Dense(32, activation='relu'),
-    tf.keras.layers.Dense(16, activation='relu'),
-    tf.keras.layers.Dense(5, activation='softmax')
-])
+### Search
+The most important feature is search. to check the performance of DS in making sales.<br>
+![Gambar Register](images/dokumentasi_bot_crop3.jpg)
 
-# Compile the model
-model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-```
-### Model Evaluation
-To evaluate the model, we first train it for 10 iterations or epochs. then we evaluate it based on the train and testing data.
-```bash
-# Train the model
-model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=1, validation_data=(X_test, y_test))
+From the picture above, we can see that the data appears automatically if you have entered the correct digipos id.<br>
 
-# Evaluate the model
-test_loss, test_accuracy = model.evaluate(X_test, y_test)
-```
-## Results
-To check the result, we will try to fill the random input into the model first.
-```bash
-# Inputan baru untuk diprediksi
-new_input = np.array([[3.8, 5, 3, 2, 1, 1, 1, 14, 13]])  # Ganti dengan inputan yang sesuai
-
-# Lakukan standardisasi pada inputan baru
-new_input_scaled = scaler.transform(new_input)
-
-# Lakukan prediksi cluster
-predicted_cluster = kmeans.predict(new_input_scaled)
-
-# Tampilkan hasil prediksi
-print("Inputan masuk ke cluster:", predicted_cluster)
-if predicted_cluster == 0:
-    print("Pemerintah")
-elif predicted_cluster == 1:
-    print("Swasta")
-elif predicted_cluster == 2:
-    print("Organisasi")
-elif predicted_cluster == 3:
-    print("Prestasi")
-elif predicted_cluster == 4:
-    print("Bantuan")
-```
-*output :* 
-*Inputan masuk ke cluster: [1]
-Swasta*
 
 ## License
-Copyright © 2023 Pakintaki Group . All rights reserved.
+Copyright © 2024 Telkomsel. All rights reserved.
 
 
 
