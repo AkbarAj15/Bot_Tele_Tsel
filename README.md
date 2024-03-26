@@ -13,7 +13,6 @@ By using the telegram bot library in python, a bot was created that can automati
   - [Login](#login)
   - [Register](#register)
   - [Search](#search)
-- [Results MoM](#results-search)
 - [License](#license)
 
 ## Getting Started
@@ -61,7 +60,6 @@ The most important feature is search. to check the performance of DS in making s
 ![Gambar Register](images/dokumentasi_bot_crop3.jpg)
 
 From the picture above, we can see that the data appears automatically if you have entered the correct digipos id.<br>
-
 
 ## License
 Copyright © 2024 Telkomsel. All rights reserved.
